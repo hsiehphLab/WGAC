@@ -1,4 +1,4 @@
-module load bedtools/2.29.0
+module load bedtools/2.29.2
 
 
 # prepare for 1kb and 90% similarity
