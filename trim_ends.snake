@@ -8,10 +8,13 @@ if not os.path.exists("log"):
 
 localrules: all_files
 
-
+print( "os.path.dirname(workflow.snakefile) = " + os.path.dirname(workflow.snakefile) )
 
 #dictInputFile = {}
 dictCommand = {}
+
+bDirectoryPathSet = False
+
 
 with open( "trim-ends_anything.sh", "r" ) as fListOfJobs:
      
@@ -30,6 +33,16 @@ with open( "trim-ends_anything.sh", "r" ) as fListOfJobs:
           # 0       1                                                   2                                                                    3                                                     4                                                            5
 
           aWords = szLine.split()
+
+
+          if ( not bDirectoryPathSet ):
+              szTrim_pl = aWords[1]
+              szDirectoryPath = os.path.dirname( szTrim_pl )
+              bDirectoryPathSet = True
+              print( "szDirectoryPath = " + szDirectoryPath )
+			
+
+
           szInputFile = aWords[2]
           aWords2 = szInputFile.split( '/' )
           szKey = aWords2[-1]
@@ -46,9 +59,11 @@ rule all_files:
 	input: expand( "{szOutputFile}", szOutputFile = list( dictCommand.keys() ) )
 
 rule trim_one_file:
-	output: os.path.dirname(workflow.snakefile) + "/data/step_8_mpi/trim/{szKey}/{szKey}.trim"
-	input: os.path.dirname(workflow.snakefile) + "/data/step_8_mpi/defugu/{szKey}"
-        params: sge_opts="-l mfree=4G"
+	output: szDirectoryPath + "/data/step_8_mpi/trim/{szKey}/{szKey}.trim"
+	input: szDirectoryPath + "/data/step_8_mpi/defugu/{szKey}"
+	resources:
+		mem = 4,
+		threads = 1
 	run:
 		# this is so it runs /usr/bin/perl
 		szCommand = "module purge; " + dictCommand[ str( output ) ]
