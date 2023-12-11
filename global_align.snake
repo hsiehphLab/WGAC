@@ -90,7 +90,9 @@ rule all_global_alignments:
 
 rule run_one_global_alignment:
 	output: "global_align_flags/{nNumber}"
-        params: sge_opts="-l mfree=4G"
+	resources:
+		mem = 4,
+		threads = 1
 	run:
 		szCommands = dictCommand[ int(wildcards.nNumber) ]
                 aLines = szCommands.splitlines()
