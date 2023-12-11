@@ -54,7 +54,9 @@ rule run_lastz_on_one_batch_of_fugu_files:
         tab='batches_for_lastz_self.tab'
     output:
         flag=touch('flags/batch_{batch}_done')
-    params: sge_opts = "-l mfree=5G"
+    resources:
+        mem = 5,
+        threads = 1
     run:
         
         df = pd.read_csv(input.tab, sep='\t')
@@ -99,7 +101,7 @@ rule run_lastz_on_one_batch_of_fugu_files:
               continue
 
 
-           szCommand = "module load lastz/1.02.00 && lastz " + szInput + " " + szParameters + " >" + szOutput
+           szCommand = "module load lastz/1.04.00 && lastz " + szInput + " " + szParameters + " >" + szOutput
            print( "about to execute: " + szCommand )
            shell( szCommand )
 
@@ -107,7 +109,9 @@ rule make_batch_tab:
     input: "fugu2" 
     output:
         tab='batches_for_lastz_self.tab'
-    params: sge_opts="-l mfree=5G"
+    resources:
+        mem = 5,
+        threads = 1
     run:
         szCommand = "ls fugu2 | shuf "
         print( "about to execute: " + szCommand )
