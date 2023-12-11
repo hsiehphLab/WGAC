@@ -36,7 +36,8 @@ all : chromosomes.txt fastalength.log fasta_done mask_out_done fugu_done blastdb
 summary.xlsx : summary.txt
 # this failed with ModuleNotFoundError: No module named 'six' 
 #	module load python/3.7.7 numpy/1.21.1 pandas/1.3.1 && ./make_excel_summary.py --szSummaryInputFile summary.txt --szExcelOutputFile summary.xlsx
-	module load miniconda/4.9.2 && ./make_excel_summary.py --szSummaryInputFile summary.txt --szExcelOutputFile summary.xlsx
+#	module load miniconda/4.9.2 && ./make_excel_summary.py --szSummaryInputFile summary.txt --szExcelOutputFile summary.xlsx
+	module load python/3.6.3 && ./make_excel_summary.py --szSummaryInputFile summary.txt --szExcelOutputFile summary.xlsx
 
 summary.txt : data/GenomicSuperDup.tab chromosomes.txt
 	cd data && ../compute_summary_stats.sh >../summary.txt
@@ -48,20 +49,20 @@ all_plots: plots plots_just_chromosomes parasightWithFakeChromosomeDone parasigh
 #plots : stats/all.join.cull.simDis_05 stats/all.join.cull.lenDis_2K stats/all.join.cull.lenDis stats/all.join.cull.simDis stats/nr_stats.tab stats/length_similarity_kimura
 
 plots : stats/oneHitPerLine stats/length_similarity_kimura stats/nr_stats.tab data/xw.al
-	module load R/3.6.1; pushd stats; Rscript ../plots.R; popd; module load perl/5.14.2 && ./for_parasight.sh
+	module load R/4.3.0-openblas; pushd stats; Rscript ../plots.R; popd; module load perl/5.30.1 && export PERL5LIB=/common/software/install/migrated/perl/5.26.0/lib/5.26.0/:${PERL5LIB} && ./for_parasight.sh
 
 plots_just_chromosomes : stats_just_chromosomes/oneHitPerLine stats_just_chromosomes/length_similarity_kimura stats_just_chromosomes/nr_stats.tab data/xw.al
-	module load R/3.6.1; pushd stats_just_chromosomes; Rscript ../plots.R; popd; module load perl/5.14.2 && ./for_parasight_just_chromosomes.sh
+	module load R/4.3.0-openblas; pushd stats_just_chromosomes; Rscript ../plots.R; popd; module load perl/5.30.1 && export PERL5LIB=/common/software/install/migrated/perl/5.26.0/lib/5.26.0/:${PERL5LIB} && ./for_parasight_just_chromosomes.sh
 
 parasightWithFakeChromosomeDone: stats/oneHitPerLine stats/length_similarity_kimura stats/nr_stats.tab data/xw.al
-	module load perl/5.14.2 && ./parasightWithFakeChromosome.sh
+	module load perl/5.30.1 && export PERL5LIB=/common/software/install/migrated/perl/5.26.0/lib/5.26.0/:${PERL5LIB} && ./parasightWithFakeChromosome.sh
 
 parasightWithNoInterDone:  parasightWithFakeChromosomeDone
-	module load perl/5.14.2 && ./parasightWithNoInter.sh
+	module load perl/5.30.1 && export PERL5LIB=/common/software/install/migrated/perl/5.26.0/lib/5.26.0/:${PERL5LIB} && ./parasightWithNoInter.sh
 
 data/xw.al : data/oo.weild10kb.join.all.cull
 	cd data && cut -f 1,2,3,4,5,6,7,8,23,28 oo.weild10kb.join.all.cull > xw.join.all.cull
-	cd data && module load perl/5.14.2 && perl ../xwalign.pl xw.join.all.cull > xw.al
+	cd data && module load perl/5.30.1 && export PERL5LIB=/common/software/install/migrated/perl/5.26.0/lib/5.26.0/:${PERL5LIB} && perl ../xwalign.pl xw.join.all.cull > xw.al
 
 stats/gt94WGAC_ge10K.tab : stats/gt94WGAC.merged \
 	awk '$$3 - $$2 >= 10000' $< > $@
@@ -235,6 +236,7 @@ global_align_110k_done: made_sge_align_batch_110k
 made_sge_align_batch_110k: global_align_done
 	rm -rf both_tmp/both*
 	rm -rf both_tmp
+	# wgacAlign.sh writes lots like: ROW:106053  NEWDIRNUM 21  ODNUM:0021
 	./wgacAlign.sh fasta 110000 >sge_align_batch_110k.sh
 	touch made_sge_align_batch_110k
 
@@ -245,6 +247,7 @@ global_align_done: made_sge_align_batch
 made_sge_align_batch: fasta_done data/both.parse.defugu.trim.fixed.trim.defrac
 	rm -rf both_tmp/both*
 	rm -rf both_tmp
+	# wgacAlign.sh writes lots like: ROW:106053  NEWDIRNUM 21  ODNUM:0021
 	./wgacAlign.sh fasta >sge_align_batch.sh
 	touch made_sge_align_batch
 
@@ -354,7 +357,7 @@ fastalength.log : fastawholesplit_done
 
 fastawholesplit_done : fastawhole_shorter_lines_done
 	mkdir -p fastawholesplit
-	module load python/2.7.13 && cat `cat fastawhole_shorter_lines.fofn` | ./split_fasta_file.py stdin -d fastawholesplit
+	module load python2/2.7.12_anaconda4.2 && cat `cat fastawhole_shorter_lines.fofn` | ./split_fasta_file.py stdin -d fastawholesplit
 	cd fastawholesplit && rename ".fasta" "" *
 	touch fastawholesplit_done
 
