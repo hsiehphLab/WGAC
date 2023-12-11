@@ -62,7 +62,9 @@ rule all_global_alignments:
 
 rule run_one_global_alignment:
 	output: "global_align_110k_flags/{nNumber}"
-        params: sge_opts="-l mfree=4G"
+	resources:
+		mem = 4,
+		threads = 1
 	run:
 		szCommand = dictCommand[ int(wildcards.nNumber) ]
 		print( "about to execute: " + szCommand )
