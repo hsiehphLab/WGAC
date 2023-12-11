@@ -1,7 +1,7 @@
 #$ -S /bin/sh
 #!/bin/bash
 
-module load modules modules-init modules-gs
+#module load modules modules-init modules-gs
 
 #usage qsub ./blastparser42.sh `pwd`/blastout `pwd`/data/blastout.parse 250
 
