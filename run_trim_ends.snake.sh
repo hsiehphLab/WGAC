@@ -1,8 +1,5 @@
-module purge
-module load modules modules-init modules-gs/prod modules-eichler/prod
+#!/usr/bin/bash -l
 
-module load miniconda/4.5.12
+conda activate snakemake
 
-
-
-snakemake -s trim_ends.snake  --jobname "{rulename}.{jobid}" --drmaa " -w n -V -cwd -e ./log -o ./log {params.sge_opts}  -S /bin/bash" -w 100 --jobs 100 -p -k
+snakemake -s trim_ends.snake  --jobname "{rulename}.{jobid}" --profile profile -w 100 --jobs 200 -p -k
