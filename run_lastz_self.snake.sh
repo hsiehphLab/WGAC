@@ -1,5 +1,9 @@
+#!/usr/bin/bash -l
+
+
+conda activate snakemake
+
 mkdir -p log
-module purge
-module load modules modules-init modules-gs/prod modules-eichler/prod miniconda/4.5.12
-snakemake -s lastz_self.snake --jobname "{rulename}.{jobid}" --drmaa " -w n -V -cwd -e ./log -o ./log {params.sge_opts} -S /bin/bash" -w 100 --jobs 300 -p -k
+
+snakemake -s lastz_self.snake --jobname "{rulename}.{jobid}" --profile profile -w 100 --jobs 300 -p -k
 
