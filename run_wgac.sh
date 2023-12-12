@@ -5,4 +5,4 @@
 #SBATCH --mem=10g                                                                                  
 #SBATCH --cpus-per-task=1
 
-make -f makefile_wgac >makefile_wgac.out 2>&1
+make -f makefile_wgac -j 200 >makefile_wgac.out 2>&1
