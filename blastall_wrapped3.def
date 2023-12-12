@@ -1,0 +1,24 @@
+BootStrap: docker
+From: centos:centos7
+
+%setup
+    mkdir -p ${APPTAINER_ROOTFS}/opt/wgac
+
+%files
+	blastall /opt/wgac
+
+%environment
+	export PATH=$PATH:/opt/wgac
+
+%post
+	yum groupinstall 'Development Tools' -y
+	yum install libgcc.i686 glibc.i686 -y
+
+	chmod -R a=rwX /opt/wgac
+
+%labels
+    Author dunn0404
+    Version v0.0.1
+
+%help
+	Container providing a 32-bit compatible centos7 environment
