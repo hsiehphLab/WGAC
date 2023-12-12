@@ -48,6 +48,6 @@ rule blast_on_fugu_file:
 		mem = 8,
 		threads = 1
 	run:
-		szCommand = "apptainer exec	~/pipelines/wgac_singularity/wgac.sif ./blastall -p blastn -i " + str( input ) + " -o " + str( output ) + " -d blastdb/bofugu -v 5000 -b 5000 -G 180 -E 1 -q -80 -r 30 -e 1e-30 -F F -z 3000000000 -Y 3000000000 "
+		szCommand = "apptainer exec	blastall.sif ./blastall -p blastn -i " + str( input ) + " -o " + str( output ) + " -d blastdb/bofugu -v 5000 -b 5000 -G 180 -E 1 -q -80 -r 30 -e 1e-30 -F F -z 3000000000 -Y 3000000000 "
 		print( "about to execute: " + szCommand )
 		shell( szCommand )
