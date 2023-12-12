@@ -316,12 +316,17 @@ data/inter_block.parse : blastout_done
 		-output '-ssort=>name, -hsort=>qb' \
 		-filter '-min_bpalign=>$(BLAST_SEED_SIZE), -min_fracbpmatch=>0.88, -max_%gap =>40, -no_subject_self => yes, -no_doubleoverlap=>score'
 
-blastout_done : blastdb/bofugu.nsq
+blastout_done : blastdb/bofugu.nsq blastall.sif
 	mkdir -p blastout
 	# for time being, run under centos6
 	./run_blast_fugu.snake.sh
 	./checkIfBlastSucceeded.sh
 	touch blastout_done
+
+# Build singularity container
+blastall.sif : blastall_wrapped3.def
+	apptainer build -f blastall.sif blastall_wrapped3.def
+
 
 blastdb/bofugu.nsq : fugu_trf_done
 	mkdir -p blastdb
