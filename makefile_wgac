@@ -330,8 +330,9 @@ blastall.sif : blastall_wrapped3.def
 
 blastdb/bofugu.nsq : fugu_trf_done
 	mkdir -p blastdb
-	dir_cat fugu_trf blastdb/bofugu
-	formatdb -i blastdb/bofugu -o F -p F -a F
+	# the ./ is necessary so no other dir_cat or formatdb gets used instead (caused problems)
+	./dir_cat fugu_trf blastdb/bofugu
+	./formatdb -i blastdb/bofugu -o F -p F -a F
 	rm -f blastdb/bofugu
 
 
