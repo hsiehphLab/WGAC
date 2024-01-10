@@ -101,7 +101,7 @@ rule run_lastz_on_one_batch_of_fugu_files:
               continue
 
 
-           szCommand = "module load lastz/1.04.00 && lastz " + szInput + " " + szParameters + " >" + szOutput
+           szCommand = "module load lastz/1.02.00 && lastz " + szInput + " " + szParameters + " >" + szOutput
            print( "about to execute: " + szCommand )
            shell( szCommand )
 
