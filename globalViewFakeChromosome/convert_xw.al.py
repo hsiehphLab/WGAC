@@ -23,7 +23,7 @@ with open( args.szOffsetTable, "r" ) as fOffsetTable:
         # name                    length   offset
 
         if ( len( aWords ) != 3 ):
-            print "this line didn't have 3 tokens but should: " + szLine
+            print( "this line didn't have 3 tokens but should: " + szLine )
             continue
 
         nLengthOfContig = int( aWords[1] )
