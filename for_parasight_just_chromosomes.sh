@@ -18,6 +18,14 @@ echo -e "seqname\tlength" >showseq_just_chromosomes.out
 
 cat fastalength.log | sed 1d | sed '$d' | awk '{print $2"\t"$3}' | ./filterByTokenValue.py --szFileOfLegalValues chromosomes.txt --n0BasedToken 0 | sort -V >> showseq_just_chromosomes.out
 
+# added Jan 10, 2024
+module load perl/5.26.1
+
+export PERL5LIB=/common/software/install/migrated/perl/5.26.1/lib/perl5/x86_64-linux-thread-multi:/common/software/install/migrated/perl/5.26.1/lib/perl5:/common/software/install/migrated/perl/5.26.1/lib/site_perl/5.26.1:/common/software/install/migrated/perl/5.26.1/lib/site_perl:/common/software/install/migrated/perl/5.26.1/lib
+
+export PERL5LIB=${PERL5LIB}:/home/hsiehph/shared/software/perl/perl_modules/Tk/lib/perl5
+# end added Jan 10, 2024
+
 
 
 mkdir -p globalViewJustChromosomes
