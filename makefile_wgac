@@ -49,20 +49,20 @@ all_plots: plots plots_just_chromosomes parasightWithFakeChromosomeDone parasigh
 #plots : stats/all.join.cull.simDis_05 stats/all.join.cull.lenDis_2K stats/all.join.cull.lenDis stats/all.join.cull.simDis stats/nr_stats.tab stats/length_similarity_kimura
 
 plots : stats/oneHitPerLine stats/length_similarity_kimura stats/nr_stats.tab data/xw.al
-	module load R/4.3.0-openblas; pushd stats; Rscript ../plots.R; popd; module load perl/modules.centos7.5.26.1 && ./for_parasight.sh
+	module load R/4.3.0-openblas; pushd stats; Rscript ../plots.R; popd; ./for_parasight.sh
 
 plots_just_chromosomes : stats_just_chromosomes/oneHitPerLine stats_just_chromosomes/length_similarity_kimura stats_just_chromosomes/nr_stats.tab data/xw.al
-	module load R/4.3.0-openblas; pushd stats_just_chromosomes; Rscript ../plots.R; popd; module load perl/modules.centos7.5.26.1 && ./for_parasight_just_chromosomes.sh
+	module load R/4.3.0-openblas; pushd stats_just_chromosomes; Rscript ../plots.R; popd; ./for_parasight_just_chromosomes.sh
 
 parasightWithFakeChromosomeDone: stats/oneHitPerLine stats/length_similarity_kimura stats/nr_stats.tab data/xw.al
-	module load perl/5.30.1 && export PERL5LIB=/common/software/install/migrated/perl/5.26.0/lib/5.26.0/:${PERL5LIB} && ./parasightWithFakeChromosome.sh
+	./parasightWithFakeChromosome.sh
 
 parasightWithNoInterDone:  parasightWithFakeChromosomeDone
-	module load perl/5.30.1 && export PERL5LIB=/common/software/install/migrated/perl/5.26.0/lib/5.26.0/:${PERL5LIB} && ./parasightWithNoInter.sh
+	./parasightWithNoInter.sh
 
 data/xw.al : data/oo.weild10kb.join.all.cull
 	cd data && cut -f 1,2,3,4,5,6,7,8,23,28 oo.weild10kb.join.all.cull > xw.join.all.cull
-	cd data && module load perl/5.30.1 && export PERL5LIB=/common/software/install/migrated/perl/5.26.0/lib/5.26.0/:${PERL5LIB} && perl ../xwalign.pl xw.join.all.cull > xw.al
+	cd data && module load perl/5.26.1 && export PERL5LIB=${PERL5LIB}:/home/hsiehph/shared/software/perl/perl_modules/Tk/lib/perl5 && perl ../xwalign.pl xw.join.all.cull > xw.al
 
 stats/gt94WGAC_ge10K.tab : stats/gt94WGAC.merged \
 	awk '$$3 - $$2 >= 10000' $< > $@
@@ -280,6 +280,8 @@ data/step_8_mpi/defugu : data/both.parse.defugu
 data/both.parse.defugu : data/both.parse
 	blast_defuguize_hit_by_hit.pl -t $^ -d .
 
+
+# blast and lastz output are combined here
 data/both.parse : data/inter_block.parse data/intra_block.parse
 	cp $< $@
 	sed 1d $(lastword $^) >> $@
