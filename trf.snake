@@ -34,8 +34,8 @@ rule runTrfOneFile:
 		threads = 1,
 		mem=16
 	run:
-		#szCommand = "module load trf/4.09.1 && cd trf && trf " + str( wildcards.szFasta ) + " 2 7 7 80 10 50 5 -l 25 -d -h -m" 
-		szCommand = "cd trf && ~/packages/trf/4.09/trf409.linux64 " + str( wildcards.szFasta ) + " 2 7 7 80 10 50 5 -l 25 -d -h -m || true"
+		szCommand = "module load trf/4.09.1 && cd trf && trf " + str( wildcards.szFasta ) + " 2 7 7 80 10 50 5 -l 25 -d -h -m || true" 
+		#szCommand = "cd trf && /home/hsiehph/shared/software/packages/trf/4.09/trf409.linux64 " + str( wildcards.szFasta ) + " 2 7 7 80 10 50 5 -l 25 -d -h -m || true"
 		print( "about to execute: " + szCommand )
 		shell( szCommand )
 
