@@ -376,3 +376,9 @@ fastawhole_shorter_lines_done: fastawhole.fofn is_repeatmasked_flag
 is_repeatmasked_flag : fastawhole.fofn
 	cat `cat fastawhole.fofn` | ./countBasesACGT >countBasesACGT.txt
 	grep "lowercase bases" countBasesACGT.txt | awk '{if ( $$8 < 2.0 ) {print "sequence does not appear to be repeatmasked\n"; exit 1 } else { system("touch is_repeatmasked_flag" ) } }'
+
+############################  for cleaning up after completing  ##########################
+
+cleanedUp_done : 
+	./cleanUp.py && touch cleanedUp_done
+
