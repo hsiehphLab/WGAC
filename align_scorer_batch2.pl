@@ -4,7 +4,7 @@ use strict 'vars';
 use Getopt::Std;
 
 use vars qw($default_executable);
-$default_executable='align_scorer2.pl';
+$default_executable='./align_scorer2.pl';
 
 
 use vars qw($opt_a $opt_p $opt_o $opt_d $opt_e);
