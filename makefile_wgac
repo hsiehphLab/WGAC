@@ -114,7 +114,7 @@ stats_just_chromosomes/nr_stats.tab : fastalength_just_chromosomes.log stats_jus
 
 
 fastalength_just_chromosomes.log : fastalength.log chromosomes.txt
-	head -1 fastalength.log >temp && cat fastalength.log | sed '1d;$d' | filterByTokenValue.py --szFileOfLegalValues chromosomes.txt --n0BasedToken 1 | sort -k2,2V >>temp && echo "dummy_last_line" >>temp && mv temp fastalength_just_chromosomes.log 
+	head -1 fastalength.log >temp && cat fastalength.log | sed '1d;$d' | ./filterByTokenValue.py --szFileOfLegalValues chromosomes.txt --n0BasedToken 1 | sort -k2,2V >>temp && echo "dummy_last_line" >>temp && mv temp fastalength_just_chromosomes.log 
 
 
 stats/intraDupLen : stats/intraMerge
@@ -192,7 +192,7 @@ stats_just_chromosomes/oneHitPerLine : data/oo.weild10kb.join.all.cull.just.chro
 data/oo.weild10kb.join.all.cull.just.chromosomes : data/oo.weild10kb.join.all.cull chromosomes.txt
 	# to copy the header line
 	head -1 data/oo.weild10kb.join.all.cull >data/oo.weild10kb.join.all.cull.just.chromosomes
-	cat data/oo.weild10kb.join.all.cull chromosomes.txt | filterByTokenValue.py --szFileOfLegalValues chromosomes.txt --n0BasedToken 0 | filterByTokenValue.py --szFileOfLegalValues chromosomes.txt --n0BasedToken 4 >>data/oo.weild10kb.join.all.cull.just.chromosomes
+	cat data/oo.weild10kb.join.all.cull chromosomes.txt | ./filterByTokenValue.py --szFileOfLegalValues chromosomes.txt --n0BasedToken 0 | ./filterByTokenValue.py --szFileOfLegalValues chromosomes.txt --n0BasedToken 4 >>data/oo.weild10kb.join.all.cull.just.chromosomes
 
 data/GenomicSuperDup.tab : data/oo.weild10kb.join.all.cull
 	perl ./makeTrack.pl $< > $@
@@ -229,9 +229,8 @@ data/both.alignscorerdata : global_align_110k_done
 
 
 global_align_110k_done: made_sge_align_batch_110k
-	#./run_global_align_110k.snake.sh || True
+	./run_global_align_110k.snake.sh || true
 	./didEnoughGlobalAlignmentsSucceed.py --szSgeAlignBatch sge_align_batch.sh --szSgeAlignBatch110k sge_align_batch_110k.sh  --global_align_110k_flags_directory global_align_110k_flags --fMaximumPerCentAlignmentFailure 5.0 && touch global_align_110k_done
-	exit
 
 made_sge_align_batch_110k: global_align_done
 	rm -rf both_tmp/both*
@@ -312,7 +311,7 @@ data/inter_block.parse : blastout_done
 	# /usr/bin/perl must be used--not one of the perl modules
 	export PATH=/usr/bin:$PATH
 	# this prints PRINT DOUBLE GAP ERROR and BAD ALIGNMENT but so does the parser of lastz
-	blastparser42.pl -in ./blastout \
+	./blastparser42.pl -in ./blastout \
 		-out data/inter_block.parse \
 		-noprevq -v \
 		-output '-ssort=>name, -hsort=>qb' \
