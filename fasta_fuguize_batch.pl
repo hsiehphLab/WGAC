@@ -14,7 +14,8 @@ $true=1; $false=0;
 use vars qw($opt_f $opt_r $opt_o $opt_g);
 use vars qw(@fasta $ppath);
 print "OPERATING SYSTEM: $^O\n";
-$ppath="";
+# fixed Feb 9, 2024 DG for people who don't have . in their PATH
+$ppath="./";
 $ppath="perl /binp/" if $^O eq "MSWin32";
 if ($ARGV[0] eq '') {
 
