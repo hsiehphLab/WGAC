@@ -381,3 +381,7 @@ is_repeatmasked_flag : fastawhole.fofn
 cleanedUp_done : 
 	./cleanUp.py && touch cleanedUp_done
 
+chromosomes.txt : fastawhole.fofn
+	module load samtools/1.9 && cat fastawhole.fofn | xargs -I@ sh -c "echo @; test ! -f @.fai && samtools faidx @ || true"
+	cat fastawhole.fofn | xargs -I@ sh -c "cat @.fai" | sort -k2,2nr | head -25 | awk '{print $1}' >chromosomes.txt 
+
