@@ -9,4 +9,4 @@ source ~/.bashrc
 
 conda activate snakemake
 
-snakemake -s global_align.snake  --jobname "{rulename}.{jobid}" --profile profile -w 100 --jobs 100 -p -k
+snakemake -s global_align.snake  --jobname "{rulename}.{jobid}" --profile profile -w 100 --jobs 300 -p -k
