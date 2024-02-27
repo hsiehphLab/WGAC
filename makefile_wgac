@@ -295,7 +295,10 @@ data/intra_block.parse : lastz_self_done
 		-options 'MIN_BPALIGN=>200, MIN_FRACBPMATCH=>0.88, MAX_%GAP => 40, SKIP_SELF => 0, SKIP_OVERLAP=>1'
 	rm -rf tmp
 
-lastz_self_done : fugu2_done
+# dependent on blastout_done is just so 2 snakemakes are not running
+# at the same time which could lead to 600 jobs submitted at once which,
+# with multiple wgac's running at once, could be a problem for the cluster
+lastz_self_done : fugu2_done blastout_done
 	./run_lastz_self.snake.sh
 
 
