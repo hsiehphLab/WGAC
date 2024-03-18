@@ -8,8 +8,8 @@ ln -s ../parasight751.pl
 ln -s ../globalview10k.pst
 
 ./makeFakeChromosome.sh
-run_convert_xw.al.py.sh
-module load perl/5.14.2 && for_parasight_fake_chromosome.sh
+./run_convert_xw.al.py.sh
+module load perl/5.14.2 && ./for_parasight_fake_chromosome.sh
 
 #cd globalViewFakeChromosome
 
