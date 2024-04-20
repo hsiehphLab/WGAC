@@ -11,7 +11,7 @@ do
     szBasename=$(basename ${szFile})
     szOutputFile=${TMPDIR}/wgac_shorter_lines/${szBasename}
     echo ${szOutputFile} >>${szShorter}
-    echo "about to execute: source ~/.bashrc && conda activate biopython && ./longer_to_shorter_lines.py --szInputFile ${szFile} --szOutputFile ${szOutputFile}"
-     source ~/.bashrc && conda activate biopython && ./longer_to_shorter_lines.py --szInputFile ${szFile} --szOutputFile ${szOutputFile}
+    echo "about to execute: source initialize_conda.sh && conda activate biopython && ./longer_to_shorter_lines.py --szInputFile ${szFile} --szOutputFile ${szOutputFile}"
+     source initialize_conda.sh && conda activate biopython && ./longer_to_shorter_lines.py --szInputFile ${szFile} --szOutputFile ${szOutputFile}
 done <fastawhole.fofn
 
