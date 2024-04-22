@@ -1,7 +1,7 @@
 #!/usr/bin/bash -l
 
 # needed for Athef because it didn't automatically source ~/.bashrc so couldn't conda activate anything
-source ~/.bashrc
+source initialize_conda.sh
 
 
 
