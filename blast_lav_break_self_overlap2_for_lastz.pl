@@ -89,7 +89,7 @@ sub lav_remove_self_overlap{ # FILEHANDLE
     die "End of file reached without finding #:lav header\n" if ( ! $bFoundHeader );
 	#START PARSING SINGLE QUERY VS SINGLE SUBJECT WITH POSSIBLE REVERSE SUBJECT#
 	my $search_string='';
-	until ( $line=~/^s {/) {
+	until ( $line=~/^s \{/) {
 		print $OH $line;
 		$search_string.=$line;
 		$line =<$FH>;
