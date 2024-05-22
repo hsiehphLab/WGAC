@@ -14,7 +14,7 @@ cluster:
     --mem={resources.mem}g
     --tmp={resources.disk}g
     --time={resources.hrs}:00:00
-    --job-name=smk-{rule}-{wildcards}
+    --job-name=wgac-{rule}-{wildcards}
     --output=logs/{rule}/{rule}_{wildcards}.%j.out
     --export=all
     --parsable # Required to pass job IDs to scancel
