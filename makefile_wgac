@@ -114,7 +114,7 @@ stats_just_chromosomes/nr_stats.tab : fastalength_just_chromosomes.log stats_jus
 
 
 fastalength_just_chromosomes.log : fastalength.log chromosomes.txt
-	head -1 fastalength.log >temp && cat fastalength.log | sed '1d;$d' | ./filterByTokenValue.py --szFileOfLegalValues chromosomes.txt --n0BasedToken 1 | sort -k2,2V >>temp && echo "dummy_last_line" >>temp && mv temp fastalength_just_chromosomes.log 
+	module load python/3.6.3 && head -1 fastalength.log >temp && cat fastalength.log | sed '1d;$d' | ./filterByTokenValue.py --szFileOfLegalValues chromosomes.txt --n0BasedToken 1 | sort -k2,2V >>temp && echo "dummy_last_line" >>temp && mv temp fastalength_just_chromosomes.log 
 
 
 stats/intraDupLen : stats/intraMerge
@@ -192,7 +192,7 @@ stats_just_chromosomes/oneHitPerLine : data/oo.weild10kb.join.all.cull.just.chro
 data/oo.weild10kb.join.all.cull.just.chromosomes : data/oo.weild10kb.join.all.cull chromosomes.txt
 	# to copy the header line
 	head -1 data/oo.weild10kb.join.all.cull >data/oo.weild10kb.join.all.cull.just.chromosomes
-	cat data/oo.weild10kb.join.all.cull chromosomes.txt | ./filterByTokenValue.py --szFileOfLegalValues chromosomes.txt --n0BasedToken 0 | ./filterByTokenValue.py --szFileOfLegalValues chromosomes.txt --n0BasedToken 4 >>data/oo.weild10kb.join.all.cull.just.chromosomes
+	module load python/3.6.3 && cat data/oo.weild10kb.join.all.cull chromosomes.txt | ./filterByTokenValue.py --szFileOfLegalValues chromosomes.txt --n0BasedToken 0 | ./filterByTokenValue.py --szFileOfLegalValues chromosomes.txt --n0BasedToken 4 >>data/oo.weild10kb.join.all.cull.just.chromosomes
 
 data/GenomicSuperDup.tab : data/oo.weild10kb.join.all.cull
 	perl ./makeTrack.pl $< > $@
@@ -230,7 +230,7 @@ data/both.alignscorerdata : global_align_110k_done
 
 global_align_110k_done: made_sge_align_batch_110k
 	./run_global_align_110k.snake.sh || true
-	./didEnoughGlobalAlignmentsSucceed.py --szSgeAlignBatch sge_align_batch.sh --szSgeAlignBatch110k sge_align_batch_110k.sh  --global_align_110k_flags_directory global_align_110k_flags --fMaximumPerCentAlignmentFailure 5.0 && touch global_align_110k_done
+	module load python/3.6.3 && ./didEnoughGlobalAlignmentsSucceed.py --szSgeAlignBatch sge_align_batch.sh --szSgeAlignBatch110k sge_align_batch_110k.sh  --global_align_110k_flags_directory global_align_110k_flags --fMaximumPerCentAlignmentFailure 5.0 && touch global_align_110k_done
 
 made_sge_align_batch_110k: global_align_done
 	rm -rf both_tmp/both*
@@ -376,14 +376,14 @@ fastawhole_shorter_lines_done: fastawhole.fofn is_repeatmasked_flag
 	./longer_to_shorter_lines.sh && touch fastawhole_shorter_lines_done
 
 is_repeatmasked_flag : fastawhole.fofn
-	module load python2/2.7.12_anaconda4.2 && ./checkIfRepeatmasked.py
+	module load python/3.6.3 && ./checkIfRepeatmasked.py
 
 ############################  for cleaning up after completing  ##########################
 
 cleanedUp_done : 
-	./cleanUp.py && touch cleanedUp_done
+	module load python/3.6.3 && ./cleanUp.py && touch cleanedUp_done
 
 chromosomes.txt : fastawhole.fofn
-	module load samtools/1.9 && cat fastawhole.fofn | xargs -I@ sh -c "echo @; test ! -f @.fai && samtools faidx @ || true"
+	module load samtools/1.20 && cat fastawhole.fofn | xargs -I@ sh -c "echo @; test ! -f @.fai && samtools faidx @ || true"
 	cat fastawhole.fofn | xargs -I@ sh -c "cat @.fai" | sort -k2,2nr | head -25 | awk '{print $$1}' >chromosomes.txt 
 
