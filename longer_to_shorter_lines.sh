@@ -9,7 +9,8 @@ while read szFile
 do
     echo ${szFile}
     szBasename=$(basename ${szFile})
-    szOutputFile=${TMPDIR}/wgac_shorter_lines/${szBasename}
+    szBasenameNoGz=`echo $szBasename | sed 's/\.gz//'`
+    szOutputFile=${TMPDIR}/wgac_shorter_lines/${szBasenameNoGz}
     echo ${szOutputFile} >>${szShorter}
     echo "about to execute: source initialize_conda.sh && conda activate biopython && ./longer_to_shorter_lines.py --szInputFile ${szFile} --szOutputFile ${szOutputFile}"
      source initialize_conda.sh && conda activate biopython && ./longer_to_shorter_lines.py --szInputFile ${szFile} --szOutputFile ${szOutputFile}
