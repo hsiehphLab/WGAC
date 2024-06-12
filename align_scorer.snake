@@ -1,0 +1,65 @@
+import os
+
+
+
+if not os.path.exists("log"):                                                                          os.makedirs("log")
+
+
+def aGetAllAlignBothSubdirectories():
+	print( "in aGetAllAlignBothSubdirectories: " + str( sorted( os.listdir( "data/align_both") ) ) )
+	return sorted( os.listdir( "data/align_both") )
+
+def aGetAllAlignBothInSubdirectory( szSubDirr ):
+	print( "aGetAllAlignBothInSubdirectory: " + str( sorted( os.listdir( f"data/align_both/{szSubDirr}" ) ) ) )
+	return sorted( os.listdir( f"data/align_both/{szSubDirr}" ) )
+
+
+rule concat_all_align_scorer:
+	output: "data/both.alignscorerdata"
+	input: expand( "data/align_both_data_subdir/{szSubDir}", szSubDir = aGetAllAlignBothSubdirectories() )
+	localrule: True
+	run:
+		nInputFiles = len( list( input ) )
+		szCommand = "cat " + str( input[0] ) + " >data/both.tmp_alignscorerdata"
+		print( f"about to execute: {szCommand}" )
+		shell( szCommand )
+		for nInputFile in range( 1, nInputFiles ):
+			szFile = input[ nInputFile ]
+			szCommand = "sed 1d " + szFile + " >>data/both.tmp_alignscorerdata"
+			print( f"about to execute: {szCommand}" )
+			shell( szCommand )
+
+		szCommand = "mv data/both.tmp_alignscorerdata data/both.alignscorerdata"
+		print( f"about to execute: {szCommand}" )
+		shell( szCommand )
+
+rule run_align_scorer_on_all_in_subdir:
+	output: "data/align_both_data_subdir/{szSubDir}"
+	#localrule: True
+	resources:
+		mem = 5,
+		threads = 1
+	run:
+		# this should be created by snakemake but I found it wasn't
+		shell( "mkdir -p data/align_both_data" )
+		shell( "mkdir -p data/align_both_data_subdir" )
+		szSubDirr = str( wildcards.szSubDir )
+		shell( f"mkdir -p data/align_both_data/{szSubDirr}" )
+		for szOneAlignBoth in aGetAllAlignBothInSubdirectory( szSubDirr ):
+			szCommand = f"./align_scorer3.pl data/align_both/{szSubDirr}/{szOneAlignBoth} data/align_both_data_subdir/tmp{szSubDirr}"
+			print( f"about to execute {szCommand}" )
+			shell( szCommand )
+
+
+			szCommand = f"mv data/align_both/{szSubDirr}/{szOneAlignBoth}.indel data/align_both_data/{szSubDirr}"
+			print( f"about to execute {szCommand}" )
+			shell( szCommand )
+
+			szCommand = f"mv data/align_both/{szSubDirr}/{szOneAlignBoth}.mismatch data/align_both_data/{szSubDirr}"
+			print( f"about to execute {szCommand}" )
+			shell( szCommand )
+
+		szCommand = f"mv data/align_both_data_subdir/tmp{szSubDirr} data/align_both_data_subdir/{szSubDirr} "
+		print( f"about to execute {szCommand}" )
+		shell( szCommand )
+
