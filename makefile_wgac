@@ -216,7 +216,7 @@ data/defrac.align : data/both.parse.defugu.trim.fixed.trim.defrac data/both.alig
 data/both.alignscorerdata : global_align_110k_done
 	# data/align_both is the input (DG, June 2024)
 	# data/align_both_data/*.mismatch data/align_both_data/*.insert data/both.alignscorerdata the outputs
-    # prints lots of "BASE SPACE MATRIX" to stdout while running
+	# prints lots of "BASE SPACE MATRIX" to stdout while running
 	./run_align_scorer.snake.sh
 
 # #data/align_both : fasta_done data/both.parse.defugu.trim.fixed.trim.defrac
