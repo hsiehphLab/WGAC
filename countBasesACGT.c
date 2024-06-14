@@ -6,22 +6,23 @@
 
 int main( int argc, char* argv[] ) {
    char szLastHeader[10000];
-   int nHeaderLength = 0;
-   int nNumberOfBases = 0;
+   long long llHeaderLength = 0;
+   long long llNumberOfBases = 0;
    bool bInHeader = false;
    long long llNumberOfBasesAllSequences = 0;
    char c = 'x';
-   int nAs = 0;
-   int nCs = 0;
-   int nGs = 0;
-   int nTs = 0;
-   int nNs = 0;
-   int nOthers = 0;
-   int nNOrLowercase = 0;
+   long long llAs = 0;
+   long long llCs = 0;
+   long long llGs = 0;
+   long long llTs = 0;
+   long long llNs = 0;
+   long long llOthers = 0;
+   long long llNOrLowercase = 0;
    long long llNumberOfLowercaseBasesAllSequences = 0;
-   int nCsJustOneSequence = 0;
-   int nGsJustOneSequence = 0;
-   int nNsJustOneSequence = 0;
+   long long llCsJustOneSequence = 0;
+   long long llGsJustOneSequence = 0;
+   long long llNsJustOneSequence = 0;
+   long long llLowercaseJustOneSequence = 0;
 
 
    if ( argc > 1 ) {
@@ -31,8 +32,9 @@ int main( int argc, char* argv[] ) {
 
 
    // needed for printing commas in a number
+#define _POSIX_C_SOURCE 200809L   
    setlocale(LC_NUMERIC, "");
-
+   setlocale(LC_ALL, "");
 
    bool bFirstTime = true;
    while( 1 ) {
@@ -42,23 +44,24 @@ int main( int argc, char* argv[] ) {
             bFirstTime = false;
          }
          else {
-            szLastHeader[ nHeaderLength ] = 0;
-            printf( "%s has %d or %'d bases GC content %.1f%% N's %d\n",  
-                    szLastHeader, nNumberOfBases, nNumberOfBases, ( nCsJustOneSequence + nGsJustOneSequence ) * 100.0 / nNumberOfBases, nNsJustOneSequence );
-            llNumberOfBasesAllSequences += nNumberOfBases;
+            szLastHeader[ llHeaderLength ] = 0;
+            printf( "%s has %lld or %'lld bases lowercase %.1f%% N's %lld\n",  
+                    szLastHeader, llNumberOfBases, llNumberOfBases, llLowercaseJustOneSequence * 100.0 / llNumberOfBases, llNsJustOneSequence );
+            llNumberOfBasesAllSequences += llNumberOfBases;
+            llNumberOfLowercaseBasesAllSequences += llLowercaseJustOneSequence;
 
 
-            nCsJustOneSequence = 0;
-            nGsJustOneSequence = 0;
-            nNsJustOneSequence = 0;
-
+            llCsJustOneSequence = 0;
+            llGsJustOneSequence = 0;
+            llNsJustOneSequence = 0;
+            llLowercaseJustOneSequence = 0;
 
             if ( c == EOF ) break;
          }
          bInHeader = true;
          szLastHeader[0] = 0;
-         nHeaderLength = 0;
-         nNumberOfBases = 0;
+         llHeaderLength = 0;
+         llNumberOfBases = 0;
       }
       else {
          if ( bInHeader ) {
@@ -66,41 +69,41 @@ int main( int argc, char* argv[] ) {
                bInHeader = false;
             }
             else {
-               szLastHeader[ nHeaderLength ] = c;
-               ++nHeaderLength;
+               szLastHeader[ llHeaderLength ] = c;
+               ++llHeaderLength;
             }
          }
          else {
             if ( !isspace( c )  ) {
-               ++nNumberOfBases;
+               ++llNumberOfBases;
                if ( islower(c) ) {
-                  ++llNumberOfLowercaseBasesAllSequences;
+                  ++llLowercaseJustOneSequence;
                }
                char cUpper = toupper( c );
                if ( cUpper == 'A' ) {
-                  ++nAs;
+                  ++llAs;
                }
                else if ( cUpper == 'C' ) {
-                  ++nCs;
-                  ++nCsJustOneSequence;
+                  ++llCs;
+                  ++llCsJustOneSequence;
                }
                else if ( cUpper == 'G' ) {
-                  ++nGs;
-                  ++nGsJustOneSequence;
+                  ++llGs;
+                  ++llGsJustOneSequence;
                }
                else if ( cUpper == 'T' ) {
-                  ++nTs;
+                  ++llTs;
                }
                else if ( cUpper == 'N' ) {
-                  ++nNs;
-                  ++nNsJustOneSequence;
+                  ++llNs;
+                  ++llNsJustOneSequence;
                }
                else {
-                  ++nOthers;
+                  ++llOthers;
                }
 
                if ( islower(c) || ( c == 'N' ) ) {
-                  ++nNOrLowercase;
+                  ++llNOrLowercase;
                }
             }
          }
@@ -115,11 +118,11 @@ int main( int argc, char* argv[] ) {
            llNumberOfLowercaseBasesAllSequences,
            llNumberOfLowercaseBasesAllSequences * 100.0 / llNumberOfBasesAllSequences );
 
-   printf( "A: %'d C: %'d G: %'d T: %'d N: %'d (%.1f %%) Other: %'d\n", nAs, nCs, nGs, nTs, nNs, nNs * 100.0 / llNumberOfBasesAllSequences , nOthers );
+   printf( "A: %'lld C: %'lld G: %'lld T: %'lld N: %'lld (%.1f %%) Other: %'lld\n", llAs, llCs, llGs, llTs, llNs, llNs * 100.0 / llNumberOfBasesAllSequences , llOthers );
 
-   printf( "GC content: %.1f%%\n", ( nCs + nGs ) * 100.0 / llNumberOfBasesAllSequences );
+   printf( "GC content: %.1f%%\n", ( llCs + llGs ) * 100.0 / llNumberOfBasesAllSequences );
 
-   printf( "N or lowercase: %d %'d\n",  nNOrLowercase,  nNOrLowercase );
+   printf( "N or lowercase: %lld %'lld\n",  llNOrLowercase,  llNOrLowercase );
 
    return 0;
 }
