@@ -26,7 +26,7 @@ echo $jobid $output >>sacct.log
 if [[ $output =~ ^(COMPLETED).* ]]
 then
   echo success
-elif [[ $output =~ ^(RUNNING|PENDING|COMPLETING|CONFIGURING|SUSPENDED).* ]]
+elif [[ $output =~ ^(RUNNING|PENDING|COMPLETING|CONFIGURING|SUSPENDED|REQUEUED).* ]]
 then
   echo running
 elif [ "$output" = "" ]
