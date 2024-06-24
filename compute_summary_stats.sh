@@ -1,5 +1,7 @@
 module load bedtools/2.29.2
-
+# without this, filterByTokenValue.py (below) fails and leads to lots of empty files
+# DG 6/24/2024
+module load python/3.6.3
 
 # prepare for 1kb and 90% similarity
 
