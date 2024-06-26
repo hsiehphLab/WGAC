@@ -384,12 +384,13 @@ fastawhole_shorter_lines_done: fastawhole.fofn is_repeatmasked_flag
 is_repeatmasked_flag : fastawhole.fofn
 	module load python/3.6.3 && ./checkIfRepeatmasked.py
 
+chromosomes.txt : fastawhole.fofn
+	module load samtools/1.20 && cat fastawhole.fofn | xargs -I@ sh -c "echo @; test ! -f @.fai && samtools faidx @ || true"
+	cat fastawhole.fofn | xargs -I@ sh -c "cat @.fai" | sort -k2,2nr | head -25 | awk '{print $$1}' >chromosomes.txt 
+
+
 ############################  for cleaning up after completing  ##########################
 
 cleanedUp_done : 
 	module load python/3.6.3 && ./cleanUp.py && touch cleanedUp_done
-
-chromosomes.txt : fastawhole.fofn
-	module load samtools/1.20 && cat fastawhole.fofn | xargs -I@ sh -c "echo @; test ! -f @.fai && samtools faidx @ || true"
-	cat fastawhole.fofn | xargs -I@ sh -c "cat @.fai" | sort -k2,2nr | head -25 | awk '{print $$1}' >chromosomes.txt 
 
