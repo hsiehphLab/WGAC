@@ -9,6 +9,7 @@ duplicated region:
 7 chromosome
 8 start pos
 9 end pos
+10 size of the seg dup measured by $9-$8
 11 this is some ID for seg dups. if 2 different lines were the same except have 1,2,3 and 7,8,9 reversed, then
 they had the same field #11.
 (Please add to this table as you discover the meaning of columns.)
