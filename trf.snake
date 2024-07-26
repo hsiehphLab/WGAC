@@ -7,42 +7,97 @@ if not os.path.exists("log"):
     os.makedirs("log")
 
 
-szCommand = "mkdir -p trf fugu_trf"
+szCommand = "mkdir -p trf fugu_trf trf_bundles"
 print( "about to execute: " + szCommand )
 subprocess.call( szCommand, shell = True )
 
 
-aFastaFiles = glob.glob( "fugu/*" )
+nNumberOfFastaFilesPerJob = 100
 
 
+# didn't work:
+# def szGetCommasSeparatedTrfTargets():
+#     szCommasSeparatedTrfTargets = ""
+#     for szTrfTarget in aGetTrfTargets():
+#         if ( szCommasSeparatedTrfTargets != "" ):
+#             szCommasSeparatedTrfTargets += ", "
+#         szCommasSeparatedTrfTargets += f"\"trf_bundles/{szTrfTarget}\""
+        
+#     return szCommasSeparatedTrfTargets
 
-aTargets = []
-for szFastaWithFugu in aFastaFiles:
-    szFasta = os.path.basename( szFastaWithFugu )
-    print( "szFasta = " + szFasta )
-    aTargets.append( szFasta )
+#def aGetTrfTargets():
+#	return range( 1, len( aGetTrfTargets() ) + 1 )
+
+def aGetTrfTargets():
+    if ( os.path.exists( "trf_bundles.tab" ) ):
+    	with open( "trf_bundles_number_of_lines.txt", "r" ) as fNumberOfLines:
+            szLine = fNumberOfLines.readline()
+            nNumberOfBundles = int( szLine.rstrip() )
+            return range( 1, nNumberOfBundles + 1 )
+
+    aFastaFiles = glob.glob( "fugu/*" )
+    print( "in aGetTrfTargets" )
+    nNumberOfBundles = 0
+    with open( "trf_bundles.tab", "w" ) as fTrfBundles:
+
+         aCurrentBundle = []                                    
+         for nFastaFile in range( 0, len( aFastaFiles ) ):
+             szFastaFileBasename = os.path.basename( aFastaFiles[ nFastaFile ] )
+             aCurrentBundle.append( szFastaFileBasename )
+
+             if ( ( len( aCurrentBundle ) == nNumberOfFastaFilesPerJob ) or ( nFastaFile == len( aFastaFiles ) - 1  ) ):
+                szLine = '\t'.join( aCurrentBundle )
+                fTrfBundles.write( szLine + "\n" )
+                nNumberOfBundles += 1
+                aCurrentBundle = []
+
+    with open( "trf_bundles_number_of_lines.txt", "w" ) as fNumberOfLines:
+        fNumberOfLines.write( f"{nNumberOfBundles}\n" )
+
+    return range( 1, nNumberOfBundles + 1 )
+
+# def makeFileOfTargets:
+    
     
 
 rule allDone:
-	input: expand( "fugu_trf/{szTarget}", szTarget = aTargets )
+	input: expand( "trf_bundles/{nTarget}", nTarget = aGetTrfTargets() )
 	output: touch( "fugu_trf_done" )
 
-rule runTrfOneFile:
-	output: "fugu_trf/{szFasta}"
-	input: "populate_trf_with_links_done", "trf/{szFasta}"
+rule runTrfOneBundleOfFiles:
+	output: touch( "trf_bundles/{nTarget}" )
+	input: "populate_trf_with_links_done"
 	resources:
 		threads = 1,
 		mem=16
 	run:
-		szCommand = "module load trf/4.09.1 && cd trf && trf " + str( wildcards.szFasta ) + " 2 7 7 80 10 50 5 -l 25 -d -h -m || true" 
-		#szCommand = "cd trf && /home/hsiehph/shared/software/packages/trf/4.09/trf409.linux64 " + str( wildcards.szFasta ) + " 2 7 7 80 10 50 5 -l 25 -d -h -m || true"
-		print( "about to execute: " + szCommand )
-		shell( szCommand )
+		# get a list of all of the fasta files to run on
+		nDesiredLineNumber = int( wildcards.nTarget )
+		szDesiredLine = ""
+		n1Line = 0
+		with open( "trf_bundles.tab", "r" ) as fTrfBundles:
+			for szLine in fTrfBundles.readlines():
+				n1Line += 1
+				if ( n1Line == nDesiredLineNumber ):
+					szDesiredLine = szLine
+					break
 
-		szTrfOutputFile = "trf/" + str( wildcards.szFasta ) + ".2.7.7.80.10.50.5.mask"
-		szCommand = "mv " + szTrfOutputFile + " " + str( output )
-		print( "about to execute: " + szCommand )
-		shell( szCommand )
+		#with open( "trf_bundles.tab", "r" ) as fTrfBundles:
+		assert szDesiredLine != ""
+
+		print( f"splitting: {szDesiredLine}" )
+		aFastaFileBasename = szDesiredLine.split()
+
+		for szFastaFileBasename in aFastaFileBasename:
+                    szCommand = f"module load trf/4.09.1 && cd trf && trf {szFastaFileBasename} 2 7 7 80 10 50 5 -l 25 -d -h -m || true" 
+                    #szCommand = "cd trf && /home/hsiehph/shared/software/packages/trf/4.09/trf409.linux64 " + str( wildcards.szFasta ) + " 2 7 7 80 10 50 5 -l 25 -d -h -m || true"
+                    print( "about to execute: " + szCommand )
+                    shell( szCommand )
+
+                    szTrfOutputFile = f"trf/{szFastaFileBasename}.2.7.7.80.10.50.5.mask"
+                    szCommand = f"mv {szTrfOutputFile} fugu_trf/{szFastaFileBasename}"
+                    print( "about to execute: " + szCommand )
+                    shell( szCommand )
 
 
 # this must be done during a prior run of snakemake.  Otherwise there
@@ -52,7 +107,9 @@ rule populate_trf_with_links:
 	output: touch( "populate_trf_with_links_done" )
 	message: "populate_trf_with_links"
 	run:
+		aFastaFiles = glob.glob( "fugu/*" )
 
-		for szFasta in aTargets:
-		    szCommand = "ln -sf ../fugu/" + szFasta + " trf/" + szFasta
-		    subprocess.call( szCommand, shell = True )
+		for szFastaFile in aFastaFiles:
+			szFastaBasename = os.path.basename( szFastaFile )
+			szCommand = f"ln -sf ../fugu/{szFastaBasename} trf/{szFastaBasename}"
+			subprocess.call( szCommand, shell = True )
