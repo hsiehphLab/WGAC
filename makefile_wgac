@@ -30,7 +30,7 @@ BLAST_SEED_SIZE=250
 
 .PHONY : all_stats plots
 
-all : chromosomes.txt blastall.sif fastalength.log fasta_done mask_out_done fugu_done blastdb/bofugu.nsq blastout_done data/inter_block.parse fugu2_done lastz_self_done data/intra_block.parse data/both.parse data/both.parse.defugu data/both.parse.defugu.trim data/both.parse.defugu.trim.fixed.trim data/both.parse.defugu.trim.fixed.trim.defrac data/both.alignscorerdata data/defrac.align data/oo.weild10kb.join.all data/oo.weild10kb.join.all.cull data/GenomicSuperDup.tab stats/oneHitPerLine stats/oneHitPerLine_sort stats/mergeHit stats/AllDupLen stats/interSort  stats/intraSort stats/interMerge stats/intraMerge stats/interDupLen stats/intraDupLen summary.txt summary.xlsx
+all : chromosomes.txt fastalength.log fasta_done mask_out_done fugu_done blastdb/bofugu.nsq blastout_done data/inter_block.parse fugu2_done lastz_self_done data/intra_block.parse data/both.parse data/both.parse.defugu data/both.parse.defugu.trim data/both.parse.defugu.trim.fixed.trim data/both.parse.defugu.trim.fixed.trim.defrac data/both.alignscorerdata data/defrac.align data/oo.weild10kb.join.all data/oo.weild10kb.join.all.cull data/GenomicSuperDup.tab stats/oneHitPerLine stats/oneHitPerLine_sort stats/mergeHit stats/AllDupLen stats/interSort  stats/intraSort stats/interMerge stats/intraMerge stats/interDupLen stats/intraDupLen summary.txt summary.xlsx
 
 # summary.xlsx is useful for quickly making powerpoint presentations
 summary.xlsx : summary.txt
@@ -326,7 +326,7 @@ data/inter_block.parse : blastout_done
 		-output '-ssort=>name, -hsort=>qb' \
 		-filter '-min_bpalign=>$(BLAST_SEED_SIZE), -min_fracbpmatch=>0.88, -max_%gap =>40, -no_subject_self => yes, -no_doubleoverlap=>score'
 
-blastout_done : blastdb/bofugu.nsq blastall.sif
+blastout_done : blastdb/bofugu.nsq
 	mkdir -p blastout
 	# for time being, run under centos6
 	./run_blast_fugu.snake.sh
@@ -334,8 +334,8 @@ blastout_done : blastdb/bofugu.nsq blastall.sif
 	touch blastout_done
 
 # Build singularity container
-blastall.sif : blastall_wrapped3.def
-	apptainer build -f blastall.sif blastall_wrapped3.def
+#blastall.sif : blastall_wrapped3.def
+#	apptainer build -f blastall.sif blastall_wrapped3.def
 
 
 blastdb/bofugu.nsq : fugu_trf_done
