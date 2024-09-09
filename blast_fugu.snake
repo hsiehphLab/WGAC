@@ -2,19 +2,28 @@
 # replace qsub -pe orte blast64.sh
 
 import glob
+import re
+import os
+import subprocess
+import numpy as np
+import pandas as pd
+import subprocess
 
 
 if not os.path.exists("log"):
     os.makedirs("log")
 
 
-aFuguFilesNoDir = []
-for szFile in glob.glob("fugu_trf/*" ):
-    szFileNoDir = os.path.basename( szFile )
-    # debugging
-    print( szFileNoDir )
-    # end debugging
-    aFuguFilesNoDir.append( szFileNoDir )
+szCommand = "ls fugu_trf | wc -l "
+print( "about to execute: " + szCommand )
+szOutput = subprocess.check_output( szCommand, shell = True )
+nNumberOfFuguFiles = int( szOutput.rstrip() )
+nNumberOfFuguFilesPerBatch = 100
+nNumberOfBatches = int( (nNumberOfFuguFiles + nNumberOfFuguFilesPerBatch - 1) / nNumberOfFuguFilesPerBatch )
+
+localrules:  run_blast_all, make_batch_tab
+
+
 
 
 # comments from blast64.sh:
@@ -37,17 +46,78 @@ for szFile in glob.glob("fugu_trf/*" ):
 # -F F (don't filter query seq)
     
 
-rule blast_all_fugu_files:
-	input: expand( "blastout/{szFileNoDir}.bo", szFileNoDir = aFuguFilesNoDir )
+rule run_blast_all:
+	input:
+		flag=expand( 'blast_flags/batch_{batch}_done', batch=range( 0, nNumberOfBatches) )
+	output: touch( "blast_fugu_done" )
+	run:
+		szOutput = subprocess.check_output( "ls fugu_trf/* | wc -l", shell = True )
+		nNumberOfFuguTrfFiles = int( szOutput.rstrip() )
+		szOutput = subprocess.check_output( "ls blastout/* | wc -l", shell = True )
+		nNumberOfBlastOutFiles = int( szOutput.rstrip() )
+		print( "nNumberOfFuguTrfFiles = {:d} nNumberOfBlastOutFiles = {:d}".format( nNumberOfFuguTrfFiles, nNumberOfBlastOutFiles ) )
+
+		assert nNumberOfFuguTrfFiles == nNumberOfBlastOutFiles
 
 
 rule blast_on_fugu_file:
-	output: "blastout/{szFileNoDir}.bo"
-	input: "fugu_trf/{szFileNoDir}"
-	resources:
-		mem = 8,
-		threads = 1
-	run:
-		szCommand = "apptainer exec	/home/hsiehph/shared/software/packages/wgac/blastall.sif ./blastall -p blastn -i " + str( input ) + " -o " + str( output ) + " -d blastdb/bofugu -v 5000 -b 5000 -G 180 -E 1 -q -80 -r 30 -e 1e-30 -F F -z 3000000000 -Y 3000000000 "
-		print( "about to execute: " + szCommand )
-		shell( szCommand )
+    input:
+        tab='batches_for_blast.tab'
+    output:
+        flag=touch('blast_flags/batch_{batch}_done')
+    resources:
+        mem = 5,
+        threads = 1
+    run:
+        df = pd.read_csv(input.tab, sep='\t')
+        
+        df = df.loc[df['BATCH'] == int(wildcards.batch)]
+
+        szCommand = "mkdir -p blastout"
+        print( "about to execute: " + szCommand )
+        subprocess.check_call( szCommand, shell = True )
+
+
+        for szFuguFile in df['FUGU_FILE']:
+
+
+           szOutput = "blastout/" + szFuguFile + ".bo"
+           szInput = "fugu_trf/" + szFuguFile
+
+           szCommand = f"apptainer exec	/home/hsiehph/shared/software/packages/wgac/blastall.sif ./blastall -p blastn -i {szInput} -o {szOutput} -d blastdb/bofugu -v 5000 -b 5000 -G 180 -E 1 -q -80 -r 30 -e 1e-30 -F F -z 3000000000 -Y 3000000000 "
+           print( "about to execute: " + szCommand )
+           shell( szCommand )
+
+rule make_batch_tab:
+    input: "fugu_trf" 
+    output:
+        tab='batches_for_blast.tab'
+    resources:
+        mem = 5,
+        threads = 1
+    run:
+        szCommand = "ls fugu_trf | shuf "
+        print( "about to execute: " + szCommand )
+        szOutput = subprocess.check_output( szCommand, shell = True )
+              
+        aFuguFiles = szOutput.splitlines()
+
+        print( "aFuguFiles has length " + str( len( aFuguFiles ) ) )
+
+        with open( output.tab, "w" ) as fBatches:
+
+           fBatches.write( "FUGU_FILE\tBATCH\n" )
+
+
+           for nFile in range( 0, len( aFuguFiles ) ):
+              szFuguFile = aFuguFiles[nFile]
+
+              nBatchNumber = int( nFile / nNumberOfFuguFilesPerBatch )
+
+              fBatches.write( szFuguFile.decode("utf-8")   )
+              fBatches.write( "\t" )
+              fBatches.write( str( nBatchNumber ) )
+              fBatches.write( "\n" )
+
+              #fBatches.write( "{:s}\t{:d}\n".format( szFuguFile, nBatchNumber ) )
+             
