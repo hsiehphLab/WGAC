@@ -30,7 +30,11 @@ BLAST_SEED_SIZE=250
 
 .PHONY : all_stats plots
 
-all : chromosomes.txt fastalength.log fasta_done mask_out_done fugu_done blastdb/bofugu.nsq blastout_done data/inter_block.parse fugu2_done lastz_self_done data/intra_block.parse data/both.parse data/both.parse.defugu data/both.parse.defugu.trim data/both.parse.defugu.trim.fixed.trim data/both.parse.defugu.trim.fixed.trim.defrac data/both.alignscorerdata data/defrac.align data/oo.weild10kb.join.all data/oo.weild10kb.join.all.cull data/GenomicSuperDup.tab stats/oneHitPerLine stats/oneHitPerLine_sort stats/mergeHit stats/AllDupLen stats/interSort  stats/intraSort stats/interMerge stats/intraMerge stats/interDupLen stats/intraDupLen summary.txt summary.xlsx
+all : chromosomes.txt fastalength.log fasta_done mask_out_done fugu_done blastdb/bofugu.nsq blastout_done data/inter_block.parse fugu2_done lastz_self_done data/intra_block.parse data/both.parse data/both.parse.defugu data/both.parse.defugu.trim data/both.parse.defugu.trim.fixed.trim data/both.parse.defugu.trim.fixed.trim.defrac data/both.alignscorerdata data/defrac.align data/oo.weild10kb.join.all data/oo.weild10kb.join.all.cull data/GenomicSuperDup.tab stats/oneHitPerLine stats/oneHitPerLine_sort stats/mergeHit stats/AllDupLen stats/interSort  stats/intraSort stats/interMerge stats/intraMerge stats/interDupLen stats/intraDupLen summary.txt summary.xlsx cleanedUp_done
+
+
+cleanedUp_done : summary.tlsx
+	module load python/3.6.3 && ./cleanUp.py && touch cleanedUp_done
 
 # summary.xlsx is useful for quickly making powerpoint presentations
 summary.xlsx : summary.txt
@@ -388,9 +392,4 @@ chromosomes.txt : fastawhole.fofn
 	module load samtools/1.20 && cat fastawhole.fofn | xargs -I@ sh -c "echo @; test ! -f @.fai && samtools faidx @ || true"
 	cat fastawhole.fofn | xargs -I@ sh -c "cat @.fai" | sort -k2,2nr | head -25 | awk '{print $$1}' >chromosomes.txt 
 
-
-############################  for cleaning up after completing  ##########################
-
-cleanedUp_done : 
-	module load python/3.6.3 && ./cleanUp.py && touch cleanedUp_done
 
