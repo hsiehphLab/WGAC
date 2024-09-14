@@ -243,7 +243,8 @@ global_align_110k_done: made_sge_align_batch_110k
 	module load python/3.6.3 && ./didEnoughGlobalAlignmentsSucceed.py --szSgeAlignBatch sge_align_batch.sh --szSgeAlignBatch110k sge_align_batch_110k.sh  --global_align_110k_flags_directory global_align_110k_flags --fMaximumPerCentAlignmentFailure 5.0 && touch global_align_110k_done
 
 made_sge_align_batch_110k: global_align_done
-	rm -rf both_tmp/both*
+	# sometimes gave "arg list too long"
+	#rm -rf both_tmp/both*
 	rm -rf both_tmp
 	# wgacAlign.sh writes lots like: ROW:106053  NEWDIRNUM 21  ODNUM:0021
 	./wgacAlign.sh fasta 110000 >sge_align_batch_110k.sh
