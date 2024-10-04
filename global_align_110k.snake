@@ -63,7 +63,7 @@ rule all_global_alignments:
 rule run_one_global_alignment:
 	output: "global_align_110k_flags/{nNumber}"
 	resources:
-		mem = 4,
+		mem_mb = 600,
 		threads = 1
 	run:
 		szCommand = dictCommand[ int(wildcards.nNumber) ]

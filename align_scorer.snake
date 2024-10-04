@@ -37,7 +37,7 @@ rule run_align_scorer_on_all_in_subdir:
 	output: "data/align_both_data_subdir/{szSubDir}"
 	#localrule: True
 	resources:
-		mem = 5,
+		mem_mb = 400,
 		threads = 1
 	run:
 		# this should be created by snakemake but I found it wasn't

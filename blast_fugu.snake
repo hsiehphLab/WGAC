@@ -66,8 +66,9 @@ rule blast_on_fugu_file:
     output:
         flag=touch('blast_flags/batch_{batch}_done')
     resources:
-        mem = 5,
-        threads = 1
+        mem_mb = 800,
+        threads = 1,
+        runtime = "5h"
     run:
         df = pd.read_csv(input.tab, sep='\t')
         
@@ -93,8 +94,9 @@ rule make_batch_tab:
     output:
         tab='batches_for_blast.tab'
     resources:
-        mem = 5,
-        threads = 1
+        mem_mb = 800,
+        threads = 1,
+        runtime = "5h"
     run:
         szCommand = "ls fugu_trf | shuf "
         print( "about to execute: " + szCommand )

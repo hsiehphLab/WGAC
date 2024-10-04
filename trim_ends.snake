@@ -62,7 +62,7 @@ rule trim_one_file:
 	output: szDirectoryPath + "/data/step_8_mpi/trim/{szKey}/{szKey}.trim"
 	input: szDirectoryPath + "/data/step_8_mpi/defugu/{szKey}"
 	resources:
-		mem = 4,
+		mem_mb = 400,
 		threads = 1
 	run:
 		# this is so it runs /usr/bin/perl
