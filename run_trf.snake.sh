@@ -14,4 +14,6 @@ snakemake -s trf.snake populate_trf_with_links -j 100
 # restart-times was necessary since occasionally got this error:
 # Error recording metadata for finished job ([Errno 2] No such file or directory: 'fugu_trf/chr2_274.fugu'). Please ensure write permissions for the directory /net/eichler/vol27/projects/hprc/nobackups/chm13v2_wgac3/.snakemake
 
-snakemake -s trf.snake --jobname "{rulename}.{jobid}" --profile profile  -j 100 -k --rerun-incomplete --restart-times 1
+snakemake -s trf.snake --jobname "{rulename}.{jobid}" --profile profile \
+  --groups runTrfOneBundleOfFiles=trfg --group-components trfg=16 \
+  -j 100 -k --rerun-incomplete --restart-times 1

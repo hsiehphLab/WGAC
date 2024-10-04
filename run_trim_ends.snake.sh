@@ -7,4 +7,6 @@ source initialize_conda.sh
 
 conda activate snakemake
 
-snakemake -s trim_ends.snake  --jobname "{rulename}.{jobid}" --profile profile -w 100 --jobs 100 -p -k
+snakemake -s trim_ends.snake  --jobname "{rulename}.{jobid}" --profile profile \
+   --groups trim_one_file=trimg --group-components trimg=16 \
+   -w 100 --jobs 100 -p -k
