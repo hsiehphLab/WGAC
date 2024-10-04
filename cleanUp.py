@@ -6,7 +6,7 @@ import shutil
 nFilesToKeepInDirectories = 5
 
 
-aDirectoriesToMainlyEmpty = ["blastout", "logs", "fasta", "fugu_trf", "fugu", "fugu2", "mask_out", "selfblast" ]
+aDirectoriesToMainlyEmpty = ["blastout", "logs", "fasta", "fugu_trf", "fugu", "fugu2", "mask_out", "selfblast", "trf", "global_align_flags", "data/step_8_mpi/defugu", "data/step_8_mpi/trim", "both_tmp" ]
 
 
 for szDirectory in aDirectoriesToMainlyEmpty:
@@ -16,11 +16,17 @@ for szDirectory in aDirectoriesToMainlyEmpty:
 
     with os.scandir( szDirectory) as it:
         for entry in it:
-            if not entry.name.startswith('.') and entry.is_file():
+            #if not entry.name.startswith('.') and entry.is_file():
+            if not entry.name.startswith('.'):
                 nFilesSoFar += 1
                 if ( nFilesSoFar > nFilesToKeepInDirectories ):
                     #print( "about to delete: " + entry.name )
-                    os.remove( szDirectory + "/" + entry.name )
+                    if entry.is_file():
+                        os.remove( szDirectory + "/" + entry.name )
+                    elif entry.is_dir():
+                        shutil.rmtree( szDirectory + "/" + entry.name )
+                    else:
+                        exit( szDirectory + "/" + entry.name + " is not a file or directory" )
                 else:
                     print( "will keep: " + entry.name )
 
