@@ -1,7 +1,7 @@
 default-resources:
-  - disk=4
-  - mem=16
-  - hrs=24
+  - disk=1024
+  - mem_mb=16384
+  - hrs=2
 #  - hrs=48 temporarily changed for maintenance window
 cluster:
   mkdir -p logs/{rule} &&
@@ -11,8 +11,8 @@ cluster:
     --nodes=1
     --ntasks-per-node=1
     --cpus-per-task={resources.threads}
-    --mem={resources.mem}g
-    --tmp={resources.disk}g
+    --mem={resources.mem_mb}M
+    --tmp={resources.disk}M
     --time={resources.hrs}:00:00
     --job-name=wgac-{rule}-{wildcards}
     --output=logs/{rule}/{rule}_{wildcards}.%j.out
