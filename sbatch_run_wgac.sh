@@ -1,1 +1,1 @@
-sbatch --partition=sioux,agsmall run_wgac.sh
+sbatch --partition=sioux,msismall run_wgac.sh

@@ -1,1 +1,1 @@
-sbatch --partition=sioux,agsmall clean_rsync.sh
+sbatch --partition=sioux,msismall clean_rsync.sh
