@@ -23,6 +23,8 @@ for szDirectory in aDirectoriesToMainlyEmpty:
                     #print( "about to delete: " + entry.name )
                     if entry.is_file():
                         os.remove( szDirectory + "/" + entry.name )
+                    elif entry.is_symlink():
+                        os.remove( szDirectory + "/" + entry.name )
                     elif entry.is_dir():
                         shutil.rmtree( szDirectory + "/" + entry.name )
                     else:
