@@ -6,6 +6,7 @@ import shutil
 nFilesToKeepInDirectories = 5
 
 
+
 aDirectoriesToMainlyEmpty = ["blastout", "logs", "fasta", "fugu_trf", "fugu", "fugu2", "mask_out", "selfblast", "trf", "global_align_flags", "data/step_8_mpi/defugu", "data/step_8_mpi/trim", "both_tmp" ]
 
 
