@@ -14,7 +14,7 @@ for szDirectory in aDirectoriesToMainlyEmpty:
     print( "now working on " + szDirectory )
 
     nFilesSoFar = 0
-
+    nFilesRemoved = 0
     with os.scandir( szDirectory) as it:
         for entry in it:
             #if not entry.name.startswith('.') and entry.is_file():
@@ -24,14 +24,20 @@ for szDirectory in aDirectoriesToMainlyEmpty:
                     #print( "about to delete: " + entry.name )
                     if entry.is_file():
                         os.remove( szDirectory + "/" + entry.name )
+                        nFilesRemoved += 1
                     elif entry.is_symlink():
                         os.remove( szDirectory + "/" + entry.name )
+                        nFilesRemoved += 1
                     elif entry.is_dir():
                         shutil.rmtree( szDirectory + "/" + entry.name )
                     else:
                         exit( szDirectory + "/" + entry.name + " is not a file or directory" )
                 else:
                     print( "will keep: " + entry.name )
+
+    print( f"nFilesRemoved = {nFilesRemoved}" )
+
+    #with os.scandir( szDirectory) as it:
 
 
 # multiple level directories
