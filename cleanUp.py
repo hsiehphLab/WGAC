@@ -2,9 +2,21 @@
 
 import os
 import shutil
+import subprocess
 
 nFilesToKeepInDirectories = 5
 
+
+
+def bash_command( szCommand ):
+    print( f"about to execute: {szCommand}" )
+    subprocess.call( szCommand, shell = True )
+    
+
+
+
+bash_command( f"rm -rf uncompressed_genome" )
+bash_command( f"rm -rf fastawhole_split" )
 
 
 aDirectoriesToMainlyEmpty = ["blastout", "logs", "fasta", "fugu_trf", "fugu", "fugu2", "mask_out", "selfblast", "trf", "global_align_flags", "data/step_8_mpi/defugu", "data/step_8_mpi/trim", "both_tmp" ]
@@ -15,6 +27,7 @@ for szDirectory in aDirectoriesToMainlyEmpty:
 
     nFilesSoFar = 0
     nFilesRemoved = 0
+    nDirsRemoved = 0
     with os.scandir( szDirectory) as it:
         for entry in it:
             #if not entry.name.startswith('.') and entry.is_file():
@@ -30,12 +43,13 @@ for szDirectory in aDirectoriesToMainlyEmpty:
                         nFilesRemoved += 1
                     elif entry.is_dir():
                         shutil.rmtree( szDirectory + "/" + entry.name )
+                        nDirsRemoved += 1
                     else:
                         exit( szDirectory + "/" + entry.name + " is not a file or directory" )
                 else:
                     print( "will keep: " + entry.name )
 
-    print( f"nFilesRemoved = {nFilesRemoved}" )
+    print( f"nFilesRemoved = {nFilesRemoved} nDirsRemoved = {nDirsRemoved}" )
 
     #with os.scandir( szDirectory) as it:
 
