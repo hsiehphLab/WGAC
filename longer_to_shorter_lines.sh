@@ -21,5 +21,7 @@ do
     module purge && source initialize_conda.sh && conda activate biopython && which python
     echo "about to execute: module purge && source initialize_conda.sh && conda activate biopython && ./longer_to_shorter_lines.py --szInputFile ${szFile} --szOutputFile ${szOutputFile}"
     module purge && source initialize_conda.sh && conda activate biopython && ./longer_to_shorter_lines.py --szInputFile ${szFile} --szOutputFile ${szOutputFile}
-done <fastawhole.fofn
+done <fastawhole_uncompressed.fofn
+# replaced this for ability to read compressed files 11/1/2024 (DG)
+#done <fastawhole.fofn
 
