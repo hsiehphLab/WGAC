@@ -34,7 +34,7 @@ all : chromosomes.txt fastalength.log fasta_done mask_out_done fugu_done blastdb
 
 
 cleanedUp_done : summary.xlsx
-	module load python/3.6.3 && ./cleanUp.py && touch cleanedUp_done
+	module load python/3.6.3 && ./cleanUp.py && cleanUp.py && cleanUp.py && touch cleanedUp_done
 
 # summary.xlsx is useful for quickly making powerpoint presentations
 summary.xlsx : summary.txt
