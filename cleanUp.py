@@ -25,6 +25,10 @@ aDirectoriesToMainlyEmpty = ["blastout", "logs", "fasta", "fugu_trf", "fugu", "f
 for szDirectory in aDirectoriesToMainlyEmpty:
     print( "now working on " + szDirectory )
 
+    if ( not os.path.exists( szDirectory ) ):
+        print( f"{szDirectory} doesn't exist--ignoring it" )
+        continue
+
     nFilesSoFar = 0
     nFilesRemoved = 0
     nDirsRemoved = 0
