@@ -11,10 +11,10 @@ then
   exit 1
 fi
 
-output=`sacct -j "$jobid" --allclusters --format State --noheader | head -n 1 | awk '{print $1}'`
+output=`sacct -j "$jobid" --clusters=agate --format State --noheader | head -n 1 | awk '{print $1}'`
 
 # this script appears to be run in the top level fastcn directory--not in profile
-echo $jobid $output >>sacct.log
+echo $jobid $output $(date +%Y%m%d.%H%M%S) >>sacct.log
 
 
 # $output == "" added DG since I've seen cases in which the job is
