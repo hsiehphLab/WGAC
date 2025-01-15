@@ -205,6 +205,7 @@ data/GenomicSuperDup.tab : data/oo.weild10kb.join.all.cull
 data/oo.weild10kb.join.all.cull : data/oo.weild10kb.join.all
 	./make_oo.weild10kb.join.all.cull.sh $< $@
 
+# I think this is where all of the WELDFF output is from
 data/oo.weild10kb.join.all : data/defrac.align
 	./make_oo.weild10kb.join.all.sh $< $@	
 
