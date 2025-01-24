@@ -1,7 +1,7 @@
 #!/usr/bin/bash -l
 
-
-#SBATCH --time=24:00:00
+# many jobs were killed at 24 hours, 2025.01.24 (DG)
+#SBATCH --time=72:00:00
 #SBATCH --mem=10g                                                                                  
 #SBATCH --cpus-per-task=1
 
