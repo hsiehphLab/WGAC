@@ -275,7 +275,7 @@ data/both.parse.defugu.trim : trim_ends_done
 	mv data/step_8_mpi/trim/ParallelOutput.trim $@
 
 #data/step_8_mpi/trim : data/step_8_mpi/defugu
-trim_ends_done : data/step_8_mpi/defugu
+trim_ends_done : data_step_8_mpi_defugu_done
 	mkdir -p data/step_8_mpi/trim
 	./make_trim_jobs.sh ${TRIM_SPECIES} >trim-ends_${TRIM_SPECIES}.sh
 	./run_trim_ends.snake.sh
@@ -283,11 +283,12 @@ trim_ends_done : data/step_8_mpi/defugu
 	./checkIfTrimEndsSucceeded.sh
 	touch trim_ends_done
 
-data/step_8_mpi/defugu : data/both.parse.defugu
+data_step_8_mpi_defugu_done : data/both.parse.defugu
 	mkdir -p $@
 	perl ./split.pl $< 300 $(shell wc -l $<)
 	find newdir/ -type f -exec cp {} $@ \;
 	rm -rf newdir
+	touch data_step_8_mpi_defugu_done
 
 data/both.parse.defugu : data/both.parse
 	./blast_defuguize_hit_by_hit.pl -t $^ -d .
