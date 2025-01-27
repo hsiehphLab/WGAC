@@ -9,4 +9,4 @@ conda activate snakemake
 
 snakemake -s trim_ends.snake  --jobname "{rulename}.{jobid}" --profile profile \
    --groups trim_one_file=trimg --group-components trimg=16 \
-   -w 300 --jobs 100 -p -k
+   -w 300 --jobs 100 -p -k --nolock
