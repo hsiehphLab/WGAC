@@ -282,10 +282,11 @@ trim_ends_done : data_step_8_mpi_defugu_done
 	./checkIfTrimEndsSucceeded.sh
 	touch trim_ends_done
 
+# data/step_8_mpi/defugu : data/both.parse.defugu
 data_step_8_mpi_defugu_done : data/both.parse.defugu
-	mkdir -p $@
+	mkdir -p data/step_8_mpi/defugu
 	perl ./split.pl $< 300 $(shell wc -l $<)
-	find newdir/ -type f -exec cp {} $@ \;
+	find newdir/ -type f -exec cp {} data/step_8_mpi/defugu \;
 	rm -rf newdir
 	touch data_step_8_mpi_defugu_done
 
