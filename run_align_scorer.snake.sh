@@ -2,7 +2,7 @@
 
 
 # prepare for using conda
-source /home/hsiehph/shared/bin/initialize_conda.sh
+source /projects/standard/hsiehph/shared/bin/initialize_conda.sh
 
 conda activate snakemake
 

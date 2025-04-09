@@ -70,7 +70,7 @@ parasightWithNoInterDone:  parasightWithFakeChromosomeDone
 
 data/xw.al : data/oo.weild10kb.join.all.cull
 	cd data && cut -f 1,2,3,4,5,6,7,8,23,28 oo.weild10kb.join.all.cull > xw.join.all.cull
-	cd data && module load perl/5.26.1 && export PERL5LIB=${PERL5LIB}:/home/hsiehph/shared/software/perl/perl_modules/Tk/lib/perl5 && perl ../xwalign.pl xw.join.all.cull > xw.al
+	cd data && module load perl/5.26.1 && export PERL5LIB=${PERL5LIB}:/projects/standard/hsiehph/shared/software/perl/perl_modules/Tk/lib/perl5 && perl ../xwalign.pl xw.join.all.cull > xw.al
 
 stats/gt94WGAC_ge10K.tab : stats/gt94WGAC.merged \
 	awk '$$3 - $$2 >= 10000' $< > $@
