@@ -1,8 +1,35 @@
-# WGAC
-see wiki.pdf
+wgac
+
+create an empty directory
+
+git clone git@github.com:hsiehphLab/WGAC.git .
+
+create a file:
+fastawhole.fofn
+which contains the name (or names) of the assembly to run wgac on.  This assembly must (I believe) be soft-masked.
+Not masked will not work because wgac will consider mobile elements to be seg dups.  Hard masked will not work because wgac will not be able to extend seg dups using repeats.
+
+
+So just run it:
+./sbatch_run_wgac.sh
+
+Wait for 8 to 12 hours.
+
+If you see a file, summary.txt and summary.xls, then it completed successfully.  
+Otherwise see me.
+
+To make plots:
+make -f makefile_wgac all_plots
+
+This must be run in an X environment.
+
+To clean up intermediate files when you are done:
+make -f makefile_wgac cleanUp_done
+
 
 The fields (I think) are the following:
-1 chromosome2 start pos
+1 chromosome
+2 start pos
 3 end pos
 6 orientation _ (underscore) or - is reverse, + is forward
 duplicated region:
@@ -27,3 +54,8 @@ they had the same field #11.
 27 similarity (including indels)
 28 K_jc (Jaccard score)
 29 k_kimura (Kimura score)
+
+see wiki.pdf
+
+also see:
+https://docs.google.com/document/d/1H_kM-mv3idgwaUmbhDl5qrkIdUL2qmqM9YGKsCoRga0/edit?pli=1&tab=t.0
